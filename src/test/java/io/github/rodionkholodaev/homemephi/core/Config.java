@@ -9,6 +9,10 @@ public final class Config {
     private static final Dotenv DOTENV = Dotenv.configure().ignoreIfMissing().load();
 
     public static final String BASE_URL = "https://home.mephi.ru";
+    // Личный кабинет: сюда auth.mephi.ru возвращает после входа (параметр service)
+    public static final String HOME_URL = BASE_URL + "/home";
+    // Отдельный сервер авторизации (CAS), общий для всех систем МИФИ
+    public static final String AUTH_URL = "https://auth.mephi.ru";
     public static final Duration TIMEOUT = Duration.ofSeconds(10);
 
     // Делаем приватный конструктор чтобы java не сделала дефолтный публичный
