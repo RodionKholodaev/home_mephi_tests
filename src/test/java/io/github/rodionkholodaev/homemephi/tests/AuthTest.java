@@ -16,10 +16,17 @@ import io.github.rodionkholodaev.homemephi.core.Config;
 import io.github.rodionkholodaev.homemephi.pages.LoginPage;
 import io.github.rodionkholodaev.homemephi.pages.ProfilePage;
 import io.github.rodionkholodaev.homemephi.pages.StartPage;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 
+// Epic > Feature > Story - разделы, по которым тесты сгруппированы в отчёте Allure (вкладка Behaviors)
+@Epic("Личный кабинет home.mephi.ru")
+@Feature("Авторизация")
 class AuthTest extends BaseTest {
 
     @Test
+    @Story("Вход в кабинет")
     @DisplayName("Кнопка «Войти» на главной ведёт на auth.mephi.ru с возвратом в кабинет")
     void loginButtonRedirectsToAuthServer() {
         LoginPage loginPage = StartPage.open(driver).clickLogin();
@@ -31,6 +38,7 @@ class AuthTest extends BaseTest {
     }
 
     @Test
+    @Story("Вход в кабинет")
     @DisplayName("Вход с верными логином и паролем открывает профиль пользователя")
     void loginWithValidCredentials() {
         // Если за TIMEOUT не откроется профиль /users/<id>, конструктор ProfilePage упадёт с TimeoutException
@@ -40,6 +48,7 @@ class AuthTest extends BaseTest {
     }
 
     @Test
+    @Story("Ошибки входа")
     @DisplayName("Вход с несуществующим логином оставляет на странице входа")
     void loginWithUnknownUser() {
         // Логин выдуманный, а не свой с неверным паролем: иначе прогоны могут заблокировать учётку
@@ -54,9 +63,10 @@ class AuthTest extends BaseTest {
                         "Должно появиться сообщение об ошибке входа")
         );
     }
-    
+
     @ParameterizedTest(name = "{0}")
     @ValueSource(strings = { "/notifications", "/talks", "/users" })
+    @Story("Защита закрытых страниц")
     @DisplayName("Закрытая страница без входа отправляет на auth.mephi.ru")
     void protectedPageRedirectsToLogin(String path) {
         driver.get(Config.BASE_URL + path);
@@ -71,6 +81,7 @@ class AuthTest extends BaseTest {
     }
 
     @Test
+    @Story("Ошибки входа")
     @DisplayName("Пустую форму браузер не отправляет")
     void emptyFormIsNotSubmitted() {
         LoginPage loginPage = LoginPage.open(driver).submitEmpty();

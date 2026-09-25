@@ -9,6 +9,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import io.github.rodionkholodaev.homemephi.core.Config;
+import io.qameta.allure.Param;
+import io.qameta.allure.Step;
+import io.qameta.allure.model.Parameter;
 
 // Страница входа auth.mephi.ru/login (CAS). service - куда вернуть пользователя после входа
 public class LoginPage extends BasePage {
@@ -37,12 +40,15 @@ public class LoginPage extends BasePage {
     }
 
     // Открываем напрямую, минуя StartPage: тесты входа не должны зависеть от кнопки на главной
-    public static LoginPage open(WebDriver driver) {
+    @Step("Открыть страницу входа auth.mephi.ru")
+    public static LoginPage open(@Param(mode = Parameter.Mode.HIDDEN) WebDriver driver) {
         driver.get(URL);
         return new LoginPage(driver);
     }
 
-    public ProfilePage loginAs(String username, String password) {
+    // Allure пишет в отчёт все аргументы шага. MASKED заменяет пароль звёздочками
+    @Step("Войти под пользователем {username}")
+    public ProfilePage loginAs(String username, @Param(mode = Parameter.Mode.MASKED) String password) {
         fillAndSubmit(username, password);
         return new ProfilePage(driver);
     }
@@ -50,7 +56,8 @@ public class LoginPage extends BasePage {
     // После неудачного входа сервер заново отдаёт страницу входа.
     // Ждём, пока старая форма исчезнет из DOM, иначе конструктор найдёт поле
     // на ещё не перезагруженной странице и проверки пойдут по старой странице
-    public LoginPage loginExpectingFailure(String username, String password) {
+    @Step("Попытаться войти под пользователем {username}, ожидая ошибку")
+    public LoginPage loginExpectingFailure(String username, @Param(mode = Parameter.Mode.MASKED) String password) {
         WebElement oldForm = visible(form);
         fillAndSubmit(username, password);
         wait.until(ExpectedConditions.stalenessOf(oldForm));
@@ -58,6 +65,7 @@ public class LoginPage extends BasePage {
     }
 
     // Нажимаем "Войти" без заполнения полей. Браузер не отправит форму из-за required
+    @Step("Нажать «Войти» с пустыми полями")
     public LoginPage submitEmpty() {
         click(submitButton);
         return this;

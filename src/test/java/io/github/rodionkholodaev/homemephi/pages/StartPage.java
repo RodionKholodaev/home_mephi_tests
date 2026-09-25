@@ -4,6 +4,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import io.github.rodionkholodaev.homemephi.core.Config;
+import io.qameta.allure.Param;
+import io.qameta.allure.Step;
+import io.qameta.allure.model.Parameter;
 
 // Главная home.mephi.ru для неавторизованного пользователя: большая кнопка "Войти"
 public class StartPage extends BasePage {
@@ -18,12 +21,14 @@ public class StartPage extends BasePage {
         visible(loginButton);
     }
 
-    public static StartPage open(WebDriver driver) {
+    @Step("Открыть главную home.mephi.ru")
+    public static StartPage open(@Param(mode = Parameter.Mode.HIDDEN) WebDriver driver) {
         driver.get(URL);
         return new StartPage(driver);
     }
 
     // /home без сессии перекидывает на auth.mephi.ru, поэтому возвращаем страницу входа
+    @Step("Нажать «Войти» на главной")
     public LoginPage clickLogin() {
         click(loginButton);
         return new LoginPage(driver);

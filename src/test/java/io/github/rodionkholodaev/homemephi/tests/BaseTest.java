@@ -2,10 +2,12 @@ package io.github.rodionkholodaev.homemephi.tests;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.WebDriver;
 
 import io.github.rodionkholodaev.homemephi.core.Config;
 import io.github.rodionkholodaev.homemephi.core.DriverFactory;
+import io.github.rodionkholodaev.homemephi.core.FailureAttachments;
 import io.github.rodionkholodaev.homemephi.pages.LoginPage;
 import io.github.rodionkholodaev.homemephi.pages.ProfilePage;
 
@@ -14,6 +16,10 @@ import io.github.rodionkholodaev.homemephi.pages.ProfilePage;
 public abstract class BaseTest {
 
     protected WebDriver driver;
+
+    // Скриншот и HTML страницы в отчёт Allure, если тест упал
+    @RegisterExtension
+    final FailureAttachments failureAttachments = new FailureAttachments(() -> driver);
 
     // Имена не setUp/tearDown специально: если наследник объявит метод с таким же именем,
     // он переопределит этот, и драйвер молча перестанет создаваться

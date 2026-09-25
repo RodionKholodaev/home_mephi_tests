@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import io.github.rodionkholodaev.homemephi.core.Config;
+import io.qameta.allure.Step;
 
 // Профиль пользователя home.mephi.ru/users/<id>.
 // Цепочка после входа: auth.mephi.ru -> /home?ticket=... -> /users/<id>
@@ -25,6 +26,7 @@ public class ProfilePage extends BasePage {
     }
 
     // Логин владельца профиля, по нему тест проверяет, что вошли именно под своей учёткой
+    @Step("Получить логин владельца профиля")
     public String getLogin() {
         return visible(userLogin).getDomAttribute("title");
     }
