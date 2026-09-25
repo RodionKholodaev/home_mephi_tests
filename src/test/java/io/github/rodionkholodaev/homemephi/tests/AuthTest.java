@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import io.github.rodionkholodaev.homemephi.core.Config;
 import io.github.rodionkholodaev.homemephi.pages.LoginPage;
@@ -50,6 +52,21 @@ class AuthTest extends BaseTest {
                 () -> assertEquals("", loginPage.getPasswordValue(), "Пароль не должен возвращаться в форму"),
                 () -> assertEquals("Неверное имя пользователя и пароль.", loginPage.getErrorText(),
                         "Должно появиться сообщение об ошибке входа")
+        );
+    }
+    
+    @ParameterizedTest(name = "{0}")
+    @ValueSource(strings = { "/notifications", "/talks", "/users" })
+    @DisplayName("Закрытая страница без входа отправляет на auth.mephi.ru")
+    void protectedPageRedirectsToLogin(String path) {
+        driver.get(Config.BASE_URL + path);
+        // Конструктор LoginPage сам дождётся формы входа
+        LoginPage loginPage = new LoginPage(driver);
+
+        assertAll(
+                () -> assertTrue(loginPage.isOnAuthServer(), "Должны оказаться на странице входа auth.mephi.ru"),
+                () -> assertEquals(Config.BASE_URL + path, loginPage.getServiceParam(),
+                        "После входа должно вернуть на запрошенную страницу")
         );
     }
 
